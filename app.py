@@ -100,4 +100,6 @@ with tab2:
         .unstack()
     )
     st.bar_chart(pop_album)
+
+    
  
