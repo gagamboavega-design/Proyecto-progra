@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly 
 
 # =========================
 # CONFIGURACIÓN GENERAL
@@ -77,7 +78,7 @@ df_filtrado = df[
 # =========================
 # TABS PRINCIPALES
 # =========================
-tab1, tab2, tab3, tab4 = st.tabs(["📊 KPIs", "📈 Gráficos", "🎧 Perfil Artista", "📋 Tabla"])
+tab1, tab2, tab3, tab4,tab5 = st.tabs(["📊 KPIs", "📈 Gráficos", "🎧 Perfil Artista", "📋 Tabla" , "🔍Curiosidades"])
 
 # =====================================================
 # TAB 1 - KPIs
@@ -100,6 +101,24 @@ with tab1:
 # TAB 2 - GRÁFICOS
 # =====================================================
 with tab2:
+
+        fig_bar = px.bar(
+        data,
+        x="release_year",
+        y="avg_popularity",
+        color="album_type",
+        barmode="group",
+        color_discrete_map=color_map,
+        text="avg_popularity",
+        labels={
+            "release_year": "Año de lanzamiento",
+            "avg_popularity": "Popularidad promedio",
+            "album_type": "Tipo",
+        },
+    )
+ 
+st.plotly_chart(fig_bar, use_container_width=True)
+ 
      
     st.subheader("🔥 Top 10 Artistas Más Populares")
  
@@ -202,3 +221,28 @@ with tab4:
  
     st.dataframe(tabla, use_container_width=True)
  
+
+with tab5:
+   # Ejemplo de DataFrame
+ data = {
+     "track_name": ["Golden", "Opalite", "Man I Need", "Elizabeth Taylor"],
+     "artist_name": ["HUNTR/X", "Taylor Swift", "Olivia Dean", "Taylor Swift"],
+     "duration_ms": [200000, 180000, 240000, 300000],
+     "track_popularity": [99, 97, 95, 95] ,
+     "album_release_date": [6/20/2025,10/3/2025,8/15/2025,10/3/2025]
+ }
+  
+ df = pd.DataFrame(data)
+  
+ # 1️⃣ Canción más popular
+ most_popular = df.loc[df['track_popularity'].idxmax()]
+ st.write(f"La canción más popular es '{most_popular['track_name']}' con popularidad {most_popular['track_popularity']}.")
+  
+ # 2️⃣ Duración promedio de las canciones en minutos
+ avg_duration = df['duration_ms'].mean() / 60000  # convertir ms a minutos
+ st.write(f"La duración promedio de las canciones es {avg_duration:.2f} minutos.")
+  
+ # 3️⃣ Artista con más canciones
+ artist_count = df['artist_name'].value_counts().idxmax()
+ artist_song_count = df['artist_name'].value_counts().max()
+ st.write(f"El artista con más canciones es '{artist_count}' con {artist_song_count} canciones.")
